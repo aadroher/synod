@@ -8,4 +8,6 @@ edition = "2018"
 
 [dependencies]
 num = "0.2"
+num-traits = "0.2"
+rand = "0.7"
 slow_primes = "0.1.14"

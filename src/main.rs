@@ -1,4 +1,7 @@
 extern crate num;
+extern crate rand;
+
+use num::integer::lcm;
 
 const P_NTH_INT: usize = 10000;
 const Q_NTH_INT: usize = 10050;
@@ -11,13 +14,16 @@ fn get_prime(nth: usize) -> Option<usize> {
 }
 
 fn main() {
-    match get_prime(P_NTH_INT) {
-        Some(p) => println!("p is {}", p),
-        None => unreachable!(),
-    }
+    let maybe_p = get_prime(P_NTH_INT);
+    let maybe_q = get_prime(Q_NTH_INT);
 
-    match get_prime(Q_NTH_INT) {
-        Some(p) => println!("q is {}", p),
-        None => unreachable!(),
-    }
+    let (p, q) = match (maybe_p, maybe_q) {
+        (Some(p), Some(q)) => (p, q),
+        _ => unreachable!(),
+    };
+
+    let n = p * q;
+    let lambda = lcm(p - 1, q - 1);
+
+    println!("p={}, q={}, n={}, lambda={}", p, q, n, lambda);
 }

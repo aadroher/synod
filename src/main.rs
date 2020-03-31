@@ -5,8 +5,8 @@ use num::{integer::lcm, pow::pow, BigUint};
 use num_traits::cast::ToPrimitive;
 use rand::{thread_rng, Rng};
 
-const P_NTH_INT: usize = 10000;
-const Q_NTH_INT: usize = 10050;
+const P_NTH_INT: usize = 10;
+const Q_NTH_INT: usize = 12;
 const G_RND_RANGE_UPPER_BOUND: usize = 100;
 
 fn get_prime(nth: usize) -> Option<usize> {
@@ -18,22 +18,14 @@ fn get_prime(nth: usize) -> Option<usize> {
 
 fn get_g() -> usize {
     let mut rng = thread_rng();
-
     rng.gen_range(0, G_RND_RANGE_UPPER_BOUND)
 }
 
-fn l(x: usize, n: usize) -> usize {
-    (x - 1) / n
-}
-
 fn get_mu(g: usize, lambda: usize, n: usize) -> usize {
-    let maybe_let_x: Option<usize> =  (pow(BigUint::from(g), lambda) % pow(n, 2)).to_usize();
-    let l_x = match maybe_let_x {
-        Some(x) => x,
-        _ => unreachable!()
-    }
-
-    (1 / l(l_x, n)) % n
+    println!("g={}, lambda={}", g, lambda);
+    let x = pow(g, lambda) % pow(n, 2);
+    let l = (x - 1) / n;
+    (1 / l) % n
 }
 
 fn main() {
@@ -48,6 +40,9 @@ fn main() {
     let n = p * q;
     let lambda = lcm(p - 1, q - 1);
     let g = get_g();
+
+    println!("p={}, q={}, n={}, lambda={}, g={}", p, q, n, lambda, g);
+
     let mu = get_mu(g, lambda, n);
 
     println!(

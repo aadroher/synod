@@ -1,19 +1,18 @@
 extern crate num;
+extern crate primal;
 extern crate rand;
 
-use num::{integer::lcm, pow::pow, BigUint};
-use num_traits::cast::ToPrimitive;
+use num::{pow::pow, BigUint, Integer};
+use primal::StreamingSieve;
 use rand::{thread_rng, Rng};
 
-const P_NTH_INT: usize = 10;
-const Q_NTH_INT: usize = 12;
+const P_NTH_INT: usize = 10001;
+const Q_NTH_INT: usize = 10056;
 const G_RND_RANGE_UPPER_BOUND: usize = 100;
 
-fn get_prime(nth: usize) -> Option<usize> {
-    let (_lo, hi) = slow_primes::estimate_nth_prime(10002);
-    let sieve = slow_primes::Primes::sieve(hi as usize);
-
-    sieve.primes().nth(nth - 1)
+fn get_prime(nth: usize) -> BigUint {
+    let prime = StreamingSieve::nth_prime(nth);
+    BigUint::from(prime)
 }
 
 fn get_g() -> usize {
@@ -29,24 +28,20 @@ fn get_mu(g: usize, lambda: usize, n: usize) -> usize {
 }
 
 fn main() {
-    let maybe_p = get_prime(P_NTH_INT);
-    let maybe_q = get_prime(Q_NTH_INT);
-
-    let (p, q) = match (maybe_p, maybe_q) {
-        (Some(p), Some(q)) => (p, q),
-        _ => unreachable!(),
-    };
+    let p = &get_prime(P_NTH_INT);
+    let q = &get_prime(Q_NTH_INT);
 
     let n = p * q;
-    let lambda = lcm(p - 1, q - 1);
+
+    let lambda = (p - 1usize).lcm(&(p - 1usize));
     let g = get_g();
 
     println!("p={}, q={}, n={}, lambda={}, g={}", p, q, n, lambda, g);
 
-    let mu = get_mu(g, lambda, n);
+    // let mu = get_mu(g, lambda, n);
 
-    println!(
-        "p={}, q={}, n={}, lambda={}, g={}, mu={}",
-        p, q, n, lambda, g, mu
-    );
+    // println!(
+    //     "p={}, q={}, n={}, lambda={}, g={}, mu={}",
+    //     p, q, n, lambda, g, mu
+    // );
 }

@@ -1,15 +1,13 @@
-extern crate num;
-extern crate num_iter;
-extern crate primal;
+extern crate num_bigint;
 extern crate rand;
 
-use num::{pow::pow, BigUint, Integer};
-use num_iter::range;
+use num_bigint::{BigUint, RandomBits};
 use primal::StreamingSieve;
-use rand::{thread_rng, Rng};
+use rand::Rng;
+use std::collections::BTreeSet;
 
-const P_NTH_INT: usize = 10;
-const Q_NTH_INT: usize = 11;
+const P_NTH_INT: usize = 10000;
+const Q_NTH_INT: usize = 10001;
 const G_RND_RANGE_UPPER_BOUND: usize = 100;
 
 fn get_prime(nth: usize) -> BigUint {
@@ -17,25 +15,31 @@ fn get_prime(nth: usize) -> BigUint {
     BigUint::from(prime)
 }
 
-fn get_g() -> usize {
-    let mut rng = thread_rng();
-    rng.gen_range(0, G_RND_RANGE_UPPER_BOUND)
+fn get_g(n: &BigUint, lambda: &BigUint) -> BigUint {
+    let mut rng = rand::thread_rng();
+    let lower_bound = 0.to_bigint().unwrap();
+    let upper_bound = (n * n).to_bigint().unwrap();
+
+    upper_bound;
 }
 
-fn get_z_n(n: &BigUint) -> Vec<BigUint> {
-    let bu1 = BigUint::from(1usize);
-    println!("{:?}", bu1);
-    range(bu1.clone(), n.clone())
-        .filter(|x| x.gcd(n) == bu1)
-        .collect()
-}
+// fn get_z_n(n: &BigUint) -> BTreeSet<BigUint> {
+//     let bu1 = BigUint::from(1usize);
+//     let candidates = range(bu1.clone(), n.clone());
 
-fn get_mu(g: usize, lambda: usize, n: usize) -> usize {
-    println!("g={}, lambda={}", g, lambda);
-    let x = pow(g, lambda) % pow(n, 2);
-    let l = (x - 1) / n;
-    (1 / l) % n
-}
+//     // for element in candidates {
+//     //     println!("{:?}", element);
+//     // }
+
+//     candidates.collect()
+// }
+
+// fn get_mu(g: usize, lambda: usize, n: usize) -> usize {
+//     println!("g={}, lambda={}", g, lambda);
+//     let x = pow(g, lambda) % pow(n, 2);
+//     let l = (x - 1) / n;
+//     (1 / l) % n
+// }
 
 fn main() {
     let p = &get_prime(P_NTH_INT);
@@ -45,16 +49,19 @@ fn main() {
 
     let lambda = (p - 1usize).lcm(&(p - 1usize));
     let g = get_g();
-    let z_n_squared = get_z_n(&(n * n));
+    let n_squared = &(n * n);
+    // let z_n_squared = get_z_n(n_squared);
 
     println!(
-        "p={}, q={}, n={}, lambda={}, g={}, z_n_squared=",
+        "p={}, q={}, n={}, lambda={}, g={}, n_squared={}, 
+        z_n_squared_len=",
         p,
         q,
         n,
         lambda,
         g,
-        // z_n_squared
+        n_squared,
+        // z_n_squared.len()
     );
 
     // let mu = get_mu(g, lambda, n);
